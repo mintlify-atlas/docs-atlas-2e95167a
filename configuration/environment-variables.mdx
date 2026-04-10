@@ -1,0 +1,65 @@
+---
+title: "Environment variables reference for PathForge.ai"
+description: "Configure PathForge.ai using environment variables for API keys, server port, and frontend API URL. Backend variables live in a .env file read by dotenv."
+---
+
+PathForge.ai uses environment variables to configure the Express server and connect to external AI APIs. You set these variables in a `.env` file at the root of the project. The backend reads them at startup via `dotenv`, and the frontend reads any `VITE_`-prefixed variables at build time through Vite's `import.meta.env`.
+
+## Variables
+
+<ParamField path="PORT" type="number" default="5000">
+  The port the Express server listens on. Change this if port 5000 is already in use on your machine.
+</ParamField>
+
+<ParamField path="GROQ_API_KEY" type="string" required>
+  Your Groq API key, used to authenticate requests to the Groq inference API for Llama 3.3 70B roadmap generation. See [Get and configure your API keys](/configuration/api-keys) for instructions on obtaining this key.
+</ParamField>
+
+<ParamField path="GOOGLE_API_KEY" type="string">
+  Your Google AI API key. The `@google/generative-ai` package is installed in the backend and available for future features, but this key is not required for core roadmap generation.
+</ParamField>
+
+<ParamField path="VITE_API_URL" type="string" default="https://pathforge-ai-api.onrender.com">
+  The base URL the frontend uses when sending roadmap generation requests. Set this to `http://localhost:5000` when running PathForge.ai locally so the frontend points to your local backend instead of the production server.
+</ParamField>
+
+## Complete .env example
+
+Copy this template to a `.env` file at the project root and fill in your values:
+
+```bash .env
+# Backend configuration
+PORT=5000
+
+# API keys
+GROQ_API_KEY=your_groq_api_key_here
+GOOGLE_API_KEY=your_google_api_key_here
+
+# Frontend configuration
+# Uncomment and set this for local development:
+# VITE_API_URL=http://localhost:5000
+```
+
+## Frontend environment variables
+
+<Note>
+  Any variable you want to access in the browser must be prefixed with `VITE_`. Vite statically replaces `import.meta.env.VITE_*` references at build time. Variables without this prefix are not exposed to the frontend bundle.
+</Note>
+
+In `frontend/src/pages/Form.jsx`, the API URL is read like this:
+
+```javascript Form.jsx
+const baseURL = import.meta.env.VITE_API_URL || 'https://pathforge-ai-api.onrender.com';
+```
+
+If `VITE_API_URL` is not set, the frontend falls back to the production Render URL automatically.
+
+## Security
+
+<Warning>
+  Never commit your `.env` file to version control. It is already listed in `.gitignore`, but double-check before pushing. Anyone who obtains your `GROQ_API_KEY` can make inference requests charged to your account.
+</Warning>
+
+For production deployments, set environment variables directly in your hosting platform's dashboard (for example, Render's **Environment** settings) rather than shipping a `.env` file with your build.
+
+For more information on obtaining and managing your API keys, see [Get and configure your API keys](/configuration/api-keys).

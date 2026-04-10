@@ -1,0 +1,64 @@
+---
+title: 'PathForge.ai API overview and base URL'
+description: 'The PathForge.ai REST API has two endpoints: a health check and the roadmap generator. Hosted base URL: https://pathforge-ai-api.onrender.com'
+---
+
+The PathForge.ai REST API lets you programmatically generate AI-powered career roadmaps. You send a user profile — name, education level, interests, current skills, and career goal — and the API returns a structured roadmap with recommendations, learning resources, and a phased action plan.
+
+## Base URL
+
+All requests go to the following base URL for the public hosted instance:
+
+```
+https://pathforge-ai-api.onrender.com
+```
+
+<Note>
+  If you are running a self-hosted instance of PathForge.ai, replace this base URL with your own server's address.
+</Note>
+
+## Authentication
+
+The public hosted API requires no authentication. The server uses its own Groq API key to process requests on your behalf. If you self-host PathForge.ai, you supply your own API key via the `GROQ_API_KEY` environment variable on the server — clients do not send credentials.
+
+## Request format
+
+Send all request bodies as JSON. Include the `Content-Type: application/json` header on every request that has a body.
+
+```bash
+Content-Type: application/json
+```
+
+## Response format
+
+Every response is JSON. Successful responses follow this shape:
+
+```json
+{
+  "success": true,
+  "data": { ... }
+}
+```
+
+Error responses follow this shape:
+
+```json
+{
+  "error": "A human-readable error message."
+}
+```
+
+## Available endpoints
+
+<CardGroup cols={2}>
+  <Card title="POST /api/generate-roadmap" icon="route" href="/api-reference/generate-roadmap">
+    Generate a personalized AI career roadmap from a user profile.
+  </Card>
+  <Card title="GET / — Health check" icon="heart-pulse" href="/api-reference/health-check">
+    Verify that the PathForge.ai backend is running and reachable.
+  </Card>
+</CardGroup>
+
+## Rate limits
+
+The public hosted instance runs on Groq's free tier. Groq's free-tier quotas apply to all requests made through this instance. If you need higher throughput or guaranteed availability, self-host PathForge.ai with your own Groq API key to get full control over rate limits.

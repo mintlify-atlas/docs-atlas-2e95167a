@@ -1,0 +1,82 @@
+---
+title: "Get and configure your API keys"
+description: "PathForge.ai requires a Groq API key to power its AI roadmap generation. Get your free key from the Groq Console and add it to your .env file."
+---
+
+PathForge.ai connects to external AI APIs to generate personalized learning roadmaps. You need to obtain API keys from these providers and add them to your `.env` file before the backend can serve roadmap requests. This page walks you through getting each key.
+
+## Groq API key (required)
+
+Groq is a fast AI inference platform that runs large language models on purpose-built hardware. PathForge.ai uses Groq to run **Llama 3.3 70B** (`llama-3.3-70b-versatile`), which generates the JSON roadmap returned to the frontend. Without this key, the backend cannot process any roadmap requests.
+
+<Steps>
+  <Step title="Open the Groq Console">
+    Go to [console.groq.com/keys](https://console.groq.com/keys) in your browser.
+  </Step>
+  <Step title="Sign in or create a free account">
+    Sign in with your existing account, or click **Sign up** to create a free Groq account. No credit card is required.
+  </Step>
+  <Step title="Create a new API key">
+    Click **Create API key**, give it a descriptive name (for example, `pathforge-dev`), and confirm.
+  </Step>
+  <Step title="Copy the key">
+    Copy the key immediately — Groq only shows it once. Store it somewhere safe before closing the dialog.
+  </Step>
+  <Step title="Add the key to your .env file">
+    Open your `.env` file and set:
+
+    ```bash .env
+    GROQ_API_KEY=your_key_here
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  Groq's free tier provides generous rate limits that are sufficient for personal projects and development use. You do not need a paid plan to run PathForge.ai.
+</Note>
+
+<Warning>
+  Keep your Groq API key secret. Anyone who has it can make inference requests on your behalf. Do not share it in public repositories, chat messages, or client-side code.
+</Warning>
+
+## Google AI key (optional)
+
+The `@google/generative-ai` package is installed in the backend and available for future features. You do not need this key for current roadmap generation — the `GOOGLE_API_KEY` variable is included in `.env.example` as a placeholder for upcoming functionality.
+
+<Steps>
+  <Step title="Open AI Studio">
+    Go to [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) in your browser.
+  </Step>
+  <Step title="Create a new API key">
+    Click **Create API key**, select a Google Cloud project (or let AI Studio create one for you), and copy the generated key.
+  </Step>
+  <Step title="Add the key to your .env file">
+    Open your `.env` file and set:
+
+    ```bash .env
+    GOOGLE_API_KEY=your_key_here
+    ```
+  </Step>
+</Steps>
+
+<Note>
+  This key is not required for core roadmap generation. You can safely leave `GOOGLE_API_KEY` unset or as the placeholder value without affecting PathForge.ai's current functionality.
+</Note>
+
+## .env file with both keys
+
+Here is how your `.env` file should look once you have added your keys:
+
+```bash .env
+# Backend configuration
+PORT=5000
+
+# API keys
+GROQ_API_KEY=gsk_...your_actual_groq_key...
+GOOGLE_API_KEY=AIza...your_actual_google_key...
+
+# Frontend configuration (uncomment for local development)
+# VITE_API_URL=http://localhost:5000
+```
+
+For a complete reference of all environment variables, see [Environment variables reference](/configuration/environment-variables).

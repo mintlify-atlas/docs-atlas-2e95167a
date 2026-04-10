@@ -1,0 +1,34 @@
+---
+title: 'GET / — PathForge API health check'
+description: 'Verify that the PathForge.ai backend is running. Returns a JSON status message. Use this endpoint to check connectivity before making roadmap requests.'
+---
+
+The root endpoint (`/`) is a lightweight health check that confirms the PathForge.ai backend is up and reachable. It requires no request body and no authentication, making it ideal for connectivity tests and automated liveness probes.
+
+## Endpoint
+
+```
+GET https://pathforge-ai-api.onrender.com/
+```
+
+## Example request
+
+```bash
+curl https://pathforge-ai-api.onrender.com/
+```
+
+## Response
+
+A successful response returns HTTP `200` with the following JSON body:
+
+```json
+{ "status": "PathForge API is running 🚀" }
+```
+
+<Note>
+  This endpoint requires no request body or authentication headers.
+</Note>
+
+<Tip>
+  Use this endpoint as a liveness probe when deploying PathForge.ai behind a load balancer or container orchestrator. If the endpoint returns a non-`200` status or an unexpected body, treat the instance as unhealthy and restart it.
+</Tip>

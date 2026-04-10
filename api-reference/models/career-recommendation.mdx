@@ -1,0 +1,42 @@
+---
+title: "CareerRecommendation data model"
+description: "The careerRecommendation object in every roadmap response. Contains the AI-recommended job title, salary range, job outlook, role description, and reasoning."
+---
+
+The `careerRecommendation` object lives at `data.careerRecommendation` in every successful response from `POST /api/generate-roadmap`. It summarizes the career path the AI has selected for the user and explains why that path fits their specific profile. For the full response envelope, see [RoadmapResponse](/api-reference/models/roadmap-response).
+
+<ResponseField name="title" type="string" required>
+  The specific job role the AI recommends (e.g., `"Full-Stack Developer"`, `"Data Scientist"`). This title is used as the label for the entire generated roadmap.
+</ResponseField>
+
+<ResponseField name="description" type="string" required>
+  Three to four sentences describing this career path: what the day-to-day work involves, which industries typically hire for this role, and what the long-term growth potential looks like.
+</ResponseField>
+
+<ResponseField name="reasoning" type="string" required>
+  Two to three sentences explaining why the AI selected this role for this particular user, based on the interests, current skills, and career goal the user submitted. This field is personalized to the request, not generic.
+</ResponseField>
+
+<ResponseField name="averageSalary" type="string" required>
+  The typical annual salary range for this role in USD, formatted as a human-readable string (e.g., `"$70,000 - $120,000/year"`). Figures reflect general market data as of the model's training cutoff.
+</ResponseField>
+
+<ResponseField name="jobOutlook" type="string" required>
+  A qualitative outlook label with an optional growth percentage (e.g., `"Excellent (15% growth expected)"`, `"Good (8% growth expected)"`). Sourced from the model's training data.
+</ResponseField>
+
+## Example
+
+```json
+{
+  "title": "Full-Stack Developer",
+  "description": "Full-stack developers design, build, and maintain both the frontend and backend of web applications. They work across the entire product stack — from user interfaces to databases and APIs. This role is in high demand across startups and enterprise companies alike, with strong paths into senior engineering, tech lead, and architecture roles.",
+  "reasoning": "Your interest in web development and existing HTML/CSS/JavaScript skills make full-stack development a natural progression. Your career goal of joining a tech startup aligns well with this role's prevalence in early-stage product teams.",
+  "averageSalary": "$80,000 - $130,000/year",
+  "jobOutlook": "Excellent (22% growth expected)"
+}
+```
+
+<Note>
+  Salary ranges and job outlook figures are based on general market data as of the AI model's training cutoff. Verify current compensation data with job boards such as LinkedIn Salary or Glassdoor before making career or hiring decisions.
+</Note>

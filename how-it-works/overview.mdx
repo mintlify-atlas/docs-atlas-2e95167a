@@ -1,0 +1,62 @@
+---
+title: "How PathForge.ai works end to end"
+description: "PathForge.ai collects your profile in a three-step form, sends it to an AI engine powered by Llama 3.3 70B, and returns a full career roadmap in seconds."
+---
+
+PathForge.ai takes a short profile you provide — your background, interests, skills, and career goal — and uses an AI model to produce a full, structured career roadmap in seconds. There are no external accounts required, no data stored on the server, and no manual curation involved. Every roadmap is generated fresh from your inputs.
+
+## How it works
+
+<Steps>
+  <Step title="Profile input">
+    You complete a three-step form at **/generate**. The form collects five fields: your name, education level, interests, current skills, and career goal. Once you submit, PathForge.ai sends these fields to the backend as a single API request.
+  </Step>
+  <Step title="AI processing">
+    The backend passes your profile to the Groq inference API, which runs the Llama 3.3 70B Versatile model. A system prompt configures the model as an expert career counselor. A user prompt embeds all five of your profile fields and instructs the model to return a structured JSON roadmap — and nothing else. The model generates the full roadmap in one call, typically in a few seconds.
+  </Step>
+  <Step title="Dashboard display">
+    The server extracts and validates the JSON, then returns it to the frontend. Your browser stores the roadmap in `sessionStorage` and redirects you to **/dashboard**, where six sections display your personalized results.
+  </Step>
+</Steps>
+
+## What the roadmap contains
+
+Your dashboard renders six sections from the generated JSON:
+
+<CardGroup cols={2}>
+  <Card title="Career recommendation" icon="bullseye">
+    A specific job title with a 3–4 sentence description, the reasoning behind the recommendation, an average salary range, and job market outlook.
+  </Card>
+  <Card title="Skills to learn" icon="list-check">
+    Six or more concrete capabilities to develop — not just technology names, but transferable skills like system design, data modeling, or technical communication.
+  </Card>
+  <Card title="Technologies" icon="microchip">
+    A list of tools, frameworks, languages, and databases with name, category, and priority level (High, Medium, or Low) so you know where to focus first.
+  </Card>
+  <Card title="Projects" icon="hammer">
+    Three portfolio projects at Beginner, Intermediate, and Advanced difficulty — each with a description, required skills, and a time estimate.
+  </Card>
+  <Card title="Courses" icon="graduation-cap">
+    Curated learning resources with platform name, direct link, difficulty level, and a free or paid label.
+  </Card>
+  <Card title="Roadmap phases" icon="map">
+    A four-phase timeline covering Foundation, Building Skills, Hands-On Practice, and Portfolio & Job Readiness — each with tasks and a milestone.
+  </Card>
+</CardGroup>
+
+## Privacy and data storage
+
+<Note>
+  PathForge.ai does not store your profile or your roadmap on any server. The backend processes your request in memory and discards it once the response is sent. Your roadmap is saved only in your browser's `sessionStorage`, which is cleared when you close the tab. No account, login, or personal data retention is involved at any point.
+</Note>
+
+## Explore further
+
+<CardGroup cols={2}>
+  <Card title="The AI engine" icon="robot" href="/how-it-works/ai-engine">
+    Learn how Groq and Llama 3.3 70B power the roadmap generation, including the prompt design and JSON extraction logic.
+  </Card>
+  <Card title="Roadmap structure" icon="diagram-project" href="/how-it-works/roadmap-structure">
+    Understand every field in your roadmap output and how to read each dashboard section effectively.
+  </Card>
+</CardGroup>

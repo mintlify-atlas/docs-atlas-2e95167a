@@ -1,0 +1,105 @@
+---
+title: 'POST /api/generate-roadmap'
+description: 'Generate a personalized career roadmap. Accepts a user profile with name, education, interests, skills, and goal. Returns a full AI-generated roadmap as JSON.'
+---
+
+The `/api/generate-roadmap` endpoint accepts a user profile and returns a comprehensive, AI-generated career roadmap. The roadmap includes a career recommendation, skills to learn, relevant technologies, suggested projects, curated courses, and a phased action plan. The AI model used is `llama-3.3-70b-versatile` via Groq.
+
+## Endpoint
+
+```
+POST https://pathforge-ai-api.onrender.com/api/generate-roadmap
+```
+
+## Request body
+
+All five fields are required. Omitting any field returns a `400` error.
+
+<ParamField body="name" type="string" required>
+  The user's full name (e.g., `"Alex Johnson"`).
+</ParamField>
+
+<ParamField body="educationLevel" type="string" required>
+  The user's current education level. Accepted values:
+
+  - `"High School"`
+  - `"Undergraduate (1st Year)"`
+  - `"Undergraduate (2nd Year)"`
+  - `"Undergraduate (3rd Year)"`
+  - `"Undergraduate (Final Year)"`
+  - `"Graduate / Masters"`
+  - `"PhD"`
+  - `"Bootcamp / Self-taught"`
+  - `"Working Professional"`
+</ParamField>
+
+<ParamField body="interests" type="string" required>
+  The user's interests and passions as free text (e.g., `"web development, AI, design"`).
+</ParamField>
+
+<ParamField body="currentSkills" type="string" required>
+  The user's existing skills as free text (e.g., `"Python, Excel, public speaking"`).
+</ParamField>
+
+<ParamField body="careerGoal" type="string" required>
+  The user's target career goal (e.g., `"Senior Software Engineer at Google"`).
+</ParamField>
+
+## Example request
+
+<CodeGroup>
+
+```bash curl
+curl -X POST https://pathforge-ai-api.onrender.com/api/generate-roadmap \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Alex Johnson",
+    "educationLevel": "Undergraduate (Final Year)",
+    "interests": "web development, open source, AI tools",
+    "currentSkills": "HTML, CSS, basic JavaScript",
+    "careerGoal": "Full-Stack Developer at a tech startup"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://pathforge-ai-api.onrender.com/api/generate-roadmap', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: 'Alex Johnson',
+    educationLevel: 'Undergraduate (Final Year)',
+    interests: 'web development, open source, AI tools',
+    currentSkills: 'HTML, CSS, basic JavaScript',
+    careerGoal: 'Full-Stack Developer at a tech startup'
+  })
+});
+const data = await response.json();
+console.log(data.data.careerRecommendation.title);
+```
+
+</CodeGroup>
+
+## Response
+
+A successful response returns HTTP `200` with `success: true` and a `data` object containing the full roadmap.
+
+```json
+{
+  "success": true,
+  "data": { ... }
+}
+```
+
+The `data` object contains the following top-level fields: `careerRecommendation`, `skillsToLearn`, `technologies`, `projects`, `courses`, and `roadmap`. See [Roadmap response schema](/api-reference/models/roadmap-response) for the complete field-by-field reference.
+
+<Note>
+  Response time is typically 2–8 seconds depending on Groq's current inference speed.
+</Note>
+
+## Error responses
+
+| Status | Body | Cause |
+|--------|------|-------|
+| `400` | `{ "error": "All fields are required." }` | One or more required fields are missing from the request body. |
+| `500` | `{ "error": "AI generation failed. Please check your API key and try again." }` | The Groq API returned an error. Verify the server's `GROQ_API_KEY` is valid if self-hosting. |
+| `500` | `{ "error": "Failed to parse AI response. Please try again." }` | The AI returned a response that could not be parsed as JSON. Retrying the request usually resolves this. |

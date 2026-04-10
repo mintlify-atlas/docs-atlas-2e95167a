@@ -1,0 +1,81 @@
+---
+title: "Customize PathForge.ai for your use case"
+description: "Adapt PathForge.ai's AI model, form fields, and frontend API endpoint to fit your deployment. Most changes require only editing server.js or Form.jsx."
+---
+
+PathForge.ai is designed to be straightforward to customize. You can swap the underlying AI model, adjust the education level options shown in the form, point the frontend at a different backend, or reshape the roadmap data the AI returns — all without modifying the overall application structure. The sections below cover the most common customization scenarios.
+
+## Changing the AI model
+
+The model is set in `backend/server.js` as a string in the Groq API call:
+
+```javascript backend/server.js
+model: "llama-3.3-70b-versatile"
+```
+
+Replace this value with any Groq-hosted model ID. Some options to consider:
+
+| Model | Best for |
+|---|---|
+| `llama-3.3-70b-versatile` | Default — best quality roadmaps |
+| `llama-3.1-8b-instant` | Faster responses and lower cost |
+| `llama3-70b-8192` | Longer context windows |
+
+<Warning>
+  PathForge.ai sets `response_format: { type: "json_object" }` in the Groq request to enforce structured JSON output. Not all models support JSON mode. Before switching models, confirm in the [Groq documentation](https://console.groq.com/docs/text-chat) that your chosen model supports this option, or the backend will return an error.
+</Warning>
+
+## Adding education level options
+
+The education level dropdown in the roadmap form is driven by a `EDUCATION_OPTIONS` array in `frontend/src/pages/Form.jsx`. The current options are:
+
+```javascript frontend/src/pages/Form.jsx
+const EDUCATION_OPTIONS = [
+  "High School",
+  "Undergraduate (1st Year)",
+  "Undergraduate (2nd Year)",
+  "Undergraduate (3rd Year)",
+  "Undergraduate (Final Year)",
+  "Graduate / Masters",
+  "PhD",
+  "Bootcamp / Self-taught",
+  "Working Professional",
+];
+```
+
+To add or remove options, edit this array directly. Each string you add appears as a selectable option in the **Education Level** dropdown. The value is passed as part of the form data to the backend, where it is included in the AI prompt to tailor the roadmap to the user's background.
+
+## Changing the backend API URL
+
+By default, the frontend sends requests to the production Render deployment. For local development or a custom deployment, set `VITE_API_URL` in your frontend `.env` file:
+
+```bash .env
+# Point to a local backend
+VITE_API_URL=http://localhost:5000
+
+# Or point to a custom production server
+VITE_API_URL=https://your-backend.example.com
+```
+
+The frontend reads this variable in `frontend/src/pages/Form.jsx`:
+
+```javascript frontend/src/pages/Form.jsx
+const baseURL = import.meta.env.VITE_API_URL || 'https://pathforge-ai-api.onrender.com';
+const res = await axios.post(`${baseURL}/api/generate-roadmap`, form);
+```
+
+If `VITE_API_URL` is not set, the fallback URL is used automatically. For more details on all environment variables, see [Environment variables reference](/configuration/environment-variables).
+
+## Adjusting the roadmap prompt
+
+The AI prompt that shapes roadmap generation lives in `backend/server.js`. You can modify it to change the structure of the JSON the model returns, add or remove fields, or adjust the tone and depth of the output.
+
+<Warning>
+  If you change the JSON structure that the AI returns, you must update `frontend/src/pages/Dashboard.jsx` to read the new field names and structure. The frontend renders the roadmap by accessing specific keys from the parsed JSON, so mismatched field names will cause the roadmap to display incorrectly or not at all.
+</Warning>
+
+A safe approach is to add new optional fields alongside the existing ones rather than renaming or removing fields. This lets you extend the roadmap output without breaking the current rendering logic.
+
+<Tip>
+  For local development, run the frontend and backend in separate terminals simultaneously. Vite serves the frontend on port **5173** by default, and the Express backend runs on port **5000**. Set `VITE_API_URL=http://localhost:5000` in your `.env` file so the two processes can communicate.
+</Tip>

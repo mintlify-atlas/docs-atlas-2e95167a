@@ -1,0 +1,197 @@
+---
+title: "Understanding your career roadmap output"
+description: "Every PathForge.ai roadmap has six sections: career recommendation, skills, technologies, projects, courses, and a phased timeline — all tailored to your profile."
+---
+
+When PathForge.ai finishes processing your profile, your dashboard displays a single JSON object broken into six distinct sections. Each section answers a different question about your career path. Understanding what each section contains — and how to use it — helps you get the most out of your roadmap.
+
+## The six sections
+
+<AccordionGroup>
+  <Accordion title="Career recommendation" icon="bullseye">
+    The career recommendation is the first thing you see on your dashboard, displayed in a bento grid header. It contains five fields:
+
+    | Field | Description |
+    |-------|-------------|
+    | `title` | A specific job title or role (e.g., "Machine Learning Engineer") |
+    | `description` | 3–4 sentences explaining what the role involves day-to-day |
+    | `reasoning` | 2–3 sentences explaining why this role matches your profile |
+    | `averageSalary` | A salary range formatted as a string (e.g., `$70,000 – $120,000/year`) |
+    | `jobOutlook` | A market outlook label with growth rate (e.g., `Excellent (15% growth expected)`) |
+
+    ```json
+    {
+      "careerRecommendation": {
+        "title": "Full Stack Developer",
+        "description": "Full stack developers build and maintain both the client-facing and server-side parts of web applications...",
+        "reasoning": "Your interest in building user interfaces combined with your Python background makes full stack development a natural fit...",
+        "averageSalary": "$80,000 – $130,000/year",
+        "jobOutlook": "Excellent (22% growth expected)"
+      }
+    }
+    ```
+  </Accordion>
+
+  <Accordion title="Skills to learn" icon="list-check">
+    The skills section contains an array of six or more concrete capabilities to develop. These are not technology names — they are transferable skills and competencies that underpin your recommended career path.
+
+    ```json
+    {
+      "skillsToLearn": [
+        "RESTful API design",
+        "Database schema modeling",
+        "Component-based UI architecture",
+        "Version control and branching strategies",
+        "Debugging and performance profiling",
+        "Agile collaboration and code review"
+      ]
+    }
+    ```
+
+    Use this list alongside the technologies section. Skills represent what you should be able to do; technologies represent the tools you use to do it.
+  </Accordion>
+
+  <Accordion title="Technologies" icon="microchip">
+    The technologies section lists specific tools, languages, frameworks, and databases relevant to your recommended role. Each entry has three fields:
+
+    | Field | Values |
+    |-------|--------|
+    | `name` | The technology name (e.g., `React`, `PostgreSQL`, `Docker`) |
+    | `category` | Type classification (e.g., `Programming Language`, `Framework`, `Tool`, `Database`) |
+    | `priority` | `High`, `Medium`, or `Low` |
+
+    ```json
+    {
+      "technologies": [
+        { "name": "Python", "category": "Programming Language", "priority": "High" },
+        { "name": "React", "category": "Framework", "priority": "High" },
+        { "name": "PostgreSQL", "category": "Database", "priority": "Medium" },
+        { "name": "Docker", "category": "Tool", "priority": "Low" }
+      ]
+    }
+    ```
+
+    On your dashboard, priority is displayed as a colored pill — red for High, orange for Medium, green for Low. Start with all High-priority technologies before moving to Medium.
+  </Accordion>
+
+  <Accordion title="Projects" icon="hammer">
+    The projects section contains exactly three portfolio projects, one at each difficulty level: Beginner, Intermediate, and Advanced. Each project has five fields:
+
+    | Field | Description |
+    |-------|-------------|
+    | `name` | Project title |
+    | `description` | 2–3 sentences describing what you build and what it demonstrates |
+    | `skills` | Array of skills the project exercises |
+    | `difficulty` | `Beginner`, `Intermediate`, or `Advanced` |
+    | `estimatedTime` | How long the project typically takes (e.g., `1–2 weeks`) |
+
+    ```json
+    {
+      "projects": [
+        {
+          "name": "Personal Portfolio Site",
+          "description": "Build a responsive personal website using HTML, CSS, and JavaScript...",
+          "skills": ["HTML", "CSS", "JavaScript", "Responsive design"],
+          "difficulty": "Beginner",
+          "estimatedTime": "1–2 weeks"
+        },
+        {
+          "name": "Task Management API",
+          "description": "Build a RESTful API with user authentication, CRUD operations, and a PostgreSQL database...",
+          "skills": ["Node.js", "Express", "PostgreSQL", "JWT"],
+          "difficulty": "Intermediate",
+          "estimatedTime": "2–4 weeks"
+        },
+        {
+          "name": "Full Stack SaaS Dashboard",
+          "description": "Build a multi-tenant analytics dashboard with real-time updates, role-based access control, and a React frontend...",
+          "skills": ["React", "WebSockets", "PostgreSQL", "RBAC", "Deployment"],
+          "difficulty": "Advanced",
+          "estimatedTime": "4–8 weeks"
+        }
+      ]
+    }
+    ```
+
+    On your dashboard, difficulty is displayed as a colored pill. Complete projects in order — the skills from each one build on the last.
+  </Accordion>
+
+  <Accordion title="Courses" icon="graduation-cap">
+    The courses section is an array of curated learning resources. Each course entry contains six fields:
+
+    | Field | Description |
+    |-------|-------------|
+    | `title` | The specific course title |
+    | `platform` | The platform hosting the course (e.g., `Coursera`, `freeCodeCamp`) |
+    | `url` | A direct link to the course |
+    | `description` | 1–2 sentences about what the course covers |
+    | `level` | `Beginner`, `Intermediate`, or `Advanced` |
+    | `free` | `true` if no payment is required, `false` if paid |
+
+    ```json
+    {
+      "courses": [
+        {
+          "title": "CS50's Introduction to Computer Science",
+          "platform": "edX",
+          "url": "https://www.edx.org/course/introduction-computer-science-harvardx-cs50x",
+          "description": "Harvard's foundational CS course covering algorithms, data structures, and web development...",
+          "level": "Beginner",
+          "free": true
+        }
+      ]
+    }
+    ```
+
+    On your dashboard, each course card shows the platform name as a clickable link, along with level and a free or paid pill. Start with free Beginner courses and work up to paid or advanced resources as you build momentum.
+  </Accordion>
+
+  <Accordion title="Roadmap phases" icon="map">
+    The roadmap section structures your learning journey into four sequential phases. Each phase has five fields:
+
+    | Field | Description |
+    |-------|-------------|
+    | `phase` | Phase number (1–4) |
+    | `title` | Phase name |
+    | `duration` | Suggested time range (e.g., `Month 1–2`) |
+    | `tasks` | Array of concrete tasks to complete in this phase |
+    | `milestone` | What you will have achieved by the end of the phase |
+
+    ```json
+    {
+      "roadmap": [
+        {
+          "phase": 1,
+          "title": "Foundation Phase",
+          "duration": "Month 1–2",
+          "tasks": ["Learn Python basics", "Complete CS50", "Build your first CLI tool"],
+          "milestone": "You can write and run basic programs and understand core CS concepts"
+        },
+        { "phase": 2, "title": "Building Skills Phase", "duration": "Month 3–4" },
+        { "phase": 3, "title": "Hands-On Practice Phase", "duration": "Month 5–6" },
+        { "phase": 4, "title": "Portfolio & Job Readiness Phase", "duration": "Month 7–8" }
+      ]
+    }
+    ```
+
+    On your dashboard, the four phases appear as a vertical timeline. Each phase card shows the phase number, title, duration, task list, and milestone statement.
+  </Accordion>
+</AccordionGroup>
+
+## Reading your dashboard
+
+Your dashboard presents all six sections simultaneously, but they are meant to be used in a specific order:
+
+1. **Start with the career recommendation.** Read the reasoning field to understand why PathForge.ai suggested this role for your profile. If the recommendation doesn't match your expectations, go back and regenerate with a more specific **Career Goal**.
+
+2. **Review technologies and skills together.** High-priority technologies tell you where to invest learning time first. The skills list fills in the non-technical competencies that the technologies list doesn't cover.
+
+3. **Pick your first course.** Choose a Beginner-level course from the courses section that covers one of your High-priority technologies. Don't try to enroll in everything at once.
+
+4. **Use the roadmap phases as your schedule.** The phases give you a realistic time-boxed structure. Check the milestone at the end of each phase — it tells you concretely what you should be able to do before moving on.
+
+5. **Build the projects as proof of work.** Start the Beginner project as soon as you've covered the foundational material in Phase 1. Portfolio projects are what convert learning into job opportunities.
+
+<Tip>
+  Focus on Phase 1 completely before touching Phase 2. It's tempting to jump ahead to the Advanced project or enroll in multiple courses at once, but finishing one phase with a concrete milestone is far more effective than spreading your effort across everything simultaneously.
+</Tip>

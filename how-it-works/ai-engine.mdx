@@ -1,0 +1,76 @@
+---
+title: "The AI engine behind PathForge.ai"
+description: "PathForge.ai uses Groq's fast inference to run Llama 3.3 70B, converting your profile into a structured JSON roadmap with career data, courses, and projects."
+---
+
+PathForge.ai generates your career roadmap in a single AI call. The backend sends your five profile fields to Groq's inference API, which runs the Llama 3.3 70B Versatile model and returns a complete, structured JSON object. The whole round-trip typically completes in a few seconds.
+
+## Model and provider
+
+PathForge.ai uses two components to make generation fast and reliable:
+
+**Groq** provides the inference infrastructure. Groq's hardware is optimized for low-latency large language model inference, which is why PathForge.ai can return a full career roadmap — with six detailed sections — in seconds rather than minutes.
+
+**Llama 3.3 70B Versatile** is the underlying language model. It is a 70-billion parameter open model from Meta, chosen for its strong instruction-following capabilities and breadth of knowledge across careers, technologies, and learning resources. PathForge.ai uses the model identifier `llama-3.3-70b-versatile`.
+
+To guarantee that the model returns parseable data rather than prose, the API call sets:
+
+```javascript server.js
+response_format: { type: "json_object" }
+```
+
+This forces the model to produce a valid JSON object as its entire output — no introductory text, no explanations, no markdown. If the model returns anything unexpected, the backend's extraction logic handles it (see below).
+
+## Prompt engineering
+
+The model receives two prompts on every request:
+
+**System prompt** — sets the model's role and output contract:
+
+```javascript server.js
+"You are an expert career counselor and roadmap planner AI. Output pure raw JSON matching the requested structure perfectly. Do NOT output markdown code fences like ```json."
+```
+
+This instruction establishes that the model is acting as a career counselor (shaping the quality and tone of recommendations) and reinforces that the output must be raw JSON with no wrapping markup.
+
+**User prompt** — embeds your five profile fields and defines the exact JSON structure to return:
+
+```javascript server.js
+`You are an expert career counselor and roadmap planner AI. Based on the student profile below, generate a detailed, personalized career roadmap.
+
+Student Profile:
+- Name: ${name}
+- Education Level: ${educationLevel}
+- Interests: ${interests}
+- Current Skills: ${currentSkills}
+- Career Goal: ${careerGoal}
+
+Generate a comprehensive, actionable career roadmap. Return ONLY a valid JSON object with NO markdown, NO code fences, NO extra text. Use EXACTLY this structure: { ... }`
+```
+
+The prompt includes the complete target JSON schema inline, so the model always knows precisely which fields to populate and in what format.
+
+<Note>
+  The AI generates recommendations based entirely on the profile you provide. The more specific your inputs — especially your **Career Goal** — the more relevant and actionable your roadmap will be. Vague goals produce generic roadmaps; specific goals produce targeted ones.
+</Note>
+
+## JSON extraction
+
+Even with `response_format: json_object` enabled, language models can occasionally produce output that includes whitespace, wrapping text, or other formatting artefacts. PathForge.ai handles this with a robust extraction step on the server:
+
+```javascript server.js
+const firstBrace = rawText.indexOf('{');
+const lastBrace = rawText.lastIndexOf('}');
+const jsonString = rawText.slice(firstBrace, lastBrace + 1);
+const parsedData = JSON.parse(jsonString);
+```
+
+By locating the first `{` and last `}` in the response, the backend isolates the JSON object regardless of what surrounds it. Only after a successful `JSON.parse` does the server return the data to the frontend.
+
+If parsing fails, the server returns `{ error: "message" }` rather than forwarding broken data to the dashboard.
+
+## Getting the best results
+
+<Tip>
+  Use the **Career Goal** field to specify seniority level, specialization, and company type together. For example: "Senior ML Engineer focused on NLP at a Series B startup" gives the AI three strong signals — seniority, technical focus, and work environment — that shape every section of your roadmap. A goal like "work in AI" gives it very little to work with.
+</Tip>

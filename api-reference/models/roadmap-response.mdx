@@ -1,0 +1,212 @@
+---
+title: "RoadmapResponse — full API response schema"
+description: "The complete JSON schema returned by POST /api/generate-roadmap. Includes the top-level success flag and the data object containing all six roadmap sections."
+---
+
+When you call `POST /api/generate-roadmap`, the server wraps all generated content in a top-level envelope object. This page documents every field in that envelope so you know exactly what to expect when you parse the response.
+
+<ResponseField name="success" type="boolean" required>
+  `true` when the roadmap was generated successfully. If this field is `false` or absent, check the `error` field instead — see [API error responses](/api-reference/models/error-responses).
+</ResponseField>
+
+<ResponseField name="data" type="object" required>
+  Contains all six sections of the generated roadmap. All sections are always present in a successful response.
+
+  <Expandable title="properties">
+    <ResponseField name="careerRecommendation" type="object" required>
+      The AI-recommended career path for this user, including job title, salary range, and reasoning. See the [CareerRecommendation model](/api-reference/models/career-recommendation) for the full field list.
+    </ResponseField>
+
+    <ResponseField name="skillsToLearn" type="string[]" required>
+      An ordered list of six or more skills the user should develop to pursue the recommended career. Each item is a plain string (e.g., `"React.js"`, `"Version Control (Git)"`).
+    </ResponseField>
+
+    <ResponseField name="technologies" type="object[]" required>
+      An array of technology objects the user should learn, each tagged with a category and priority level.
+
+      <Expandable title="technology properties">
+        <ResponseField name="name" type="string" required>
+          The technology name (e.g., `"JavaScript"`, `"Docker"`).
+        </ResponseField>
+        <ResponseField name="category" type="string" required>
+          The technology's classification (e.g., `"Programming Language"`, `"Frontend Framework"`, `"Database"`, `"Tool"`).
+        </ResponseField>
+        <ResponseField name="priority" type="string" required>
+          How urgently the user should learn this technology. One of `"High"`, `"Medium"`, or `"Low"`.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="projects" type="object[]" required>
+      An array of three hands-on projects — one at Beginner, one at Intermediate, and one at Advanced difficulty — that build the skills in `skillsToLearn`.
+
+      <Expandable title="project properties">
+        <ResponseField name="name" type="string" required>
+          A short, descriptive project title (e.g., `"Personal Portfolio Website"`).
+        </ResponseField>
+        <ResponseField name="description" type="string" required>
+          Two to three sentences explaining what you will build and which skills the project demonstrates.
+        </ResponseField>
+        <ResponseField name="skills" type="string[]" required>
+          The specific skills or technologies used in this project.
+        </ResponseField>
+        <ResponseField name="difficulty" type="string" required>
+          One of `"Beginner"`, `"Intermediate"`, or `"Advanced"`.
+        </ResponseField>
+        <ResponseField name="estimatedTime" type="string" required>
+          Approximate time to complete the project (e.g., `"1-2 weeks"`, `"6-8 weeks"`).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="courses" type="object[]" required>
+      An array of recommended courses sourced from online learning platforms.
+
+      <Expandable title="course properties">
+        <ResponseField name="title" type="string" required>
+          The full course title as listed on the platform.
+        </ResponseField>
+        <ResponseField name="platform" type="string" required>
+          The learning platform hosting the course (e.g., `"Udemy"`, `"Coursera"`).
+        </ResponseField>
+        <ResponseField name="url" type="string" required>
+          Direct URL to the course page.
+        </ResponseField>
+        <ResponseField name="description" type="string" required>
+          A brief summary of the course content.
+        </ResponseField>
+        <ResponseField name="level" type="string" required>
+          The intended experience level (e.g., `"Beginner"`, `"Intermediate"`).
+        </ResponseField>
+        <ResponseField name="free" type="boolean" required>
+          `true` if the course is free to enroll without payment; `false` if it requires purchase or subscription.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="roadmap" type="object[]" required>
+      An ordered array of four learning phases that sequence the skills and projects into a structured timeline.
+
+      <Expandable title="phase properties">
+        <ResponseField name="phase" type="number" required>
+          The phase number, starting at `1`.
+        </ResponseField>
+        <ResponseField name="title" type="string" required>
+          A descriptive name for this phase (e.g., `"Foundation Phase"`).
+        </ResponseField>
+        <ResponseField name="duration" type="string" required>
+          The suggested calendar duration (e.g., `"Month 1-2"`).
+        </ResponseField>
+        <ResponseField name="tasks" type="string[]" required>
+          Concrete action items to complete during this phase.
+        </ResponseField>
+        <ResponseField name="milestone" type="string" required>
+          A single sentence describing the measurable outcome that marks the end of this phase.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<Note>
+  All six sections — `careerRecommendation`, `skillsToLearn`, `technologies`, `projects`, `courses`, and `roadmap` — are always present when `success` is `true`. You do not need to guard against missing sections in a successful response.
+</Note>
+
+## Example response
+
+```json
+{
+  "success": true,
+  "data": {
+    "careerRecommendation": {
+      "title": "Full-Stack Developer",
+      "description": "Full-stack developers build and maintain both the frontend and backend of web applications. They work across databases, APIs, and user interfaces throughout the product lifecycle. Demand is strong across startups and enterprise companies, with clear growth paths into senior and lead engineering roles.",
+      "reasoning": "Your interest in web development and existing JavaScript skills make full-stack development a natural fit. Your goal of joining a tech startup aligns directly with where this role is most in demand.",
+      "averageSalary": "$80,000 - $130,000/year",
+      "jobOutlook": "Excellent (22% growth expected)"
+    },
+    "skillsToLearn": [
+      "React.js",
+      "Node.js",
+      "Database Design",
+      "RESTful API Development",
+      "Version Control (Git)",
+      "Cloud Deployment"
+    ],
+    "technologies": [
+      { "name": "JavaScript", "category": "Programming Language", "priority": "High" },
+      { "name": "React", "category": "Frontend Framework", "priority": "High" },
+      { "name": "Node.js", "category": "Runtime Environment", "priority": "High" },
+      { "name": "PostgreSQL", "category": "Database", "priority": "Medium" },
+      { "name": "Docker", "category": "Tool", "priority": "Low" }
+    ],
+    "projects": [
+      {
+        "name": "Personal Portfolio Website",
+        "description": "Build a responsive portfolio site to showcase your projects and skills. This demonstrates your HTML, CSS, and basic JavaScript abilities.",
+        "skills": ["HTML", "CSS", "JavaScript"],
+        "difficulty": "Beginner",
+        "estimatedTime": "1-2 weeks"
+      },
+      {
+        "name": "Task Management App",
+        "description": "Create a full-stack to-do application with user authentication and persistent storage. This project demonstrates CRUD operations and state management.",
+        "skills": ["React", "Node.js", "MongoDB"],
+        "difficulty": "Intermediate",
+        "estimatedTime": "3-4 weeks"
+      },
+      {
+        "name": "Real-time Chat Application",
+        "description": "Build a WebSocket-based chat app with rooms and message history. This advanced project showcases real-time communication skills.",
+        "skills": ["Socket.io", "React", "Express", "Redis"],
+        "difficulty": "Advanced",
+        "estimatedTime": "6-8 weeks"
+      }
+    ],
+    "courses": [
+      {
+        "title": "The Complete JavaScript Course 2024",
+        "platform": "Udemy",
+        "url": "https://www.udemy.com/course/the-complete-javascript-course/",
+        "description": "A comprehensive JavaScript course covering fundamentals to advanced topics including ES6+, OOP, and async programming.",
+        "level": "Beginner",
+        "free": false
+      }
+    ],
+    "roadmap": [
+      {
+        "phase": 1,
+        "title": "Foundation Phase",
+        "duration": "Month 1-2",
+        "tasks": [
+          "Complete HTML/CSS fundamentals course",
+          "Learn JavaScript basics (variables, functions, DOM manipulation)",
+          "Build your first static webpage"
+        ],
+        "milestone": "You can build and style a static multi-page website from scratch"
+      },
+      {
+        "phase": 2,
+        "title": "Building Skills Phase",
+        "duration": "Month 3-4",
+        "tasks": ["Learn React fundamentals", "Build 2-3 React projects", "Study Node.js basics"],
+        "milestone": "You can build interactive single-page applications with React"
+      },
+      {
+        "phase": 3,
+        "title": "Hands-On Practice Phase",
+        "duration": "Month 5-6",
+        "tasks": ["Build a full-stack application", "Learn database integration", "Deploy to cloud"],
+        "milestone": "You have a deployed full-stack application in your portfolio"
+      },
+      {
+        "phase": 4,
+        "title": "Portfolio & Job Readiness Phase",
+        "duration": "Month 7-8",
+        "tasks": ["Polish portfolio projects", "Practice coding interviews", "Apply to jobs"],
+        "milestone": "You are actively interviewing with a strong portfolio"
+      }
+    ]
+  }
+}
+```

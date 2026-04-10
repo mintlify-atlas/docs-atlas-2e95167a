@@ -1,0 +1,93 @@
+---
+title: "Self-host PathForge.ai with your own API keys"
+description: "Deploy your own PathForge.ai instance locally or on any Node.js host. Configure GROQ_API_KEY and run both the Express backend and Vite frontend."
+---
+
+You can run PathForge.ai on your own machine or deploy it to any Node.js-compatible host. Self-hosting gives you full control over your API keys, lets you modify the source code, and removes any dependency on the hosted backend at `pathforge-ai-api.onrender.com`.
+
+## Prerequisites
+
+Before you start, make sure you have the following:
+
+- **Node.js 18 or later** — [nodejs.org](https://nodejs.org)
+- **npm** — included with Node.js
+- **A Groq API key** — free to obtain at [console.groq.com/keys](https://console.groq.com/keys)
+
+<Note>
+  The Groq API key is required. PathForge.ai uses Groq to run the Llama 3.3 70B model that generates your career roadmaps. Without a valid key, the `/api/generate-roadmap` endpoint will not work.
+</Note>
+
+## Setup
+
+<Steps>
+  <Step title="Clone the repository">
+    Clone the PathForge.ai repository from GitHub:
+
+    ```bash
+    git clone https://github.com/ZaidFurkhan/PathForge.ai.git
+    cd PathForge.ai
+    ```
+  </Step>
+  <Step title="Install dependencies">
+    The project has separate `package.json` files for the backend and frontend. Install dependencies for both:
+
+    <CodeGroup>
+
+    ```bash backend
+    cd backend && npm install
+    ```
+
+    ```bash frontend
+    cd frontend && npm install
+    ```
+
+    </CodeGroup>
+  </Step>
+  <Step title="Configure environment variables">
+    In the `backend/` directory, create a `.env` file based on the provided example:
+
+    ```bash .env
+    PORT=5000
+    GROQ_API_KEY=your_groq_api_key_here
+    GOOGLE_API_KEY=your_google_api_key_here
+    ```
+
+    Replace `your_groq_api_key_here` with your actual Groq API key. The `GOOGLE_API_KEY` is optional and only required if you enable Google-specific features.
+  </Step>
+  <Step title="Start the backend">
+    From the `backend/` directory, start the Express server:
+
+    <CodeGroup>
+
+    ```bash development
+    npm run dev
+    ```
+
+    ```bash production
+    npm start
+    ```
+
+    </CodeGroup>
+
+    The server starts on `http://localhost:5000` by default. You can change the port by setting `PORT` in your `.env` file.
+  </Step>
+  <Step title="Start the frontend">
+    From the `frontend/` directory, start the Vite development server:
+
+    ```bash
+    npm run dev
+    ```
+
+    The frontend runs on `http://localhost:5173`. Open that URL in your browser to use your self-hosted PathForge.ai instance.
+
+    <Tip>
+      By default, the frontend sends API requests to `https://pathforge-ai-api.onrender.com`. To point it at your local backend instead, create a `.env` file in the `frontend/` directory with the following:
+
+      ```bash frontend/.env
+      VITE_API_URL=http://localhost:5000
+      ```
+
+      Restart the Vite server after adding this file.
+    </Tip>
+  </Step>
+</Steps>

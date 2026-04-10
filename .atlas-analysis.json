@@ -1,23 +1,11 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
-  "name": "PathForge.ai",
+  "projectType": "saas",
+  "projectName": "PathForge.ai",
+  "projectDescription": "An AI-powered career roadmap generator that creates personalized, step-by-step learning plans based on a student's education, skills, interests, and career goals.",
   "theme": "luma",
-  "colors": {
-    "primary": "#1B54FF",
-    "light": "#83F9FF",
-    "dark": "#111622"
-  },
-  "navbar": {
-    "primary": {
-      "type": "github",
-      "href": "https://github.com/ZaidFurkhan/PathForge.ai"
-    }
-  },
-  "footer": {
-    "socials": {
-      "github": "https://github.com/ZaidFurkhan/PathForge.ai"
-    }
-  },
+  "primaryColor": "#1B54FF",
+  "lightColor": "#83F9FF",
+  "darkColor": "#111622",
   "navigation": {
     "tabs": [
       {
@@ -71,5 +59,20 @@
         ]
       }
     ]
-  }
+  },
+  "keyFeatures": [
+    "AI-powered personalized career roadmap generation using Groq (Llama 3.3 70B)",
+    "Multi-step profile form capturing education level, interests, skills, and career goal",
+    "Comprehensive roadmap output: career recommendation, skills, technologies, projects, courses, and phased timeline",
+    "Interactive dashboard with bento-grid layout showing salary, job outlook, and reasoning",
+    "Curated course recommendations with real URLs from major platforms",
+    "Priority-tagged technology stack recommendations (High/Medium/Low)",
+    "Project ideas with difficulty levels and time estimates for portfolio building",
+    "100% free with no sign-up required",
+    "Dark neumorphic design with animated UI elements"
+  ],
+  "publicApiSurface": [
+    "POST /api/generate-roadmap — Generate a personalized career roadmap from a user profile",
+    "GET / — Health check endpoint"
+  ]
 }
